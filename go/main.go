@@ -1,30 +1,62 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+	"strconv"
+	"strings"
+)
 
-func returnsError(value int) error {
-	return fmt.Errorf("Error")
+func getInput() string {
+	return `forward 5
+	down 5
+	forward 8
+	up 3
+	down 8
+	forward 2`
 }
 
-type Foo struct{}
-
-func (f *Foo) thisIsOnFoo() error {
-	return fmt.Errorf("Error")
+type Point struct {
+	x int
+	y int
 }
 
-func CreateFoo(fail bool) (*Foo, error) {
-	if fail {
-		return nil, fmt.Errorf("Error")
+func parseLine(line string) Point {
+	parts := strings.Split(line, " ")
+	amount, err := strconv.Atoi(parts[1])
+	if err != nil {
+		log.Fatal("This should never happen")
+	}
+	if parts[0] == "forward" {
+		return Point{
+			x: amount,
+			y: 0,
+		}
+	} else if parts[0] == "up" {
+		return Point{
+			x: 0,
+			y: -amount,
+		}
 	}
 
-	return &Foo{}, nil
+	return Point{
+		x: 0,
+		y: amount,
+	}
+
 }
 
 func main() {
-	foo, err := CreateFoo(true)
 
-	if err != nil {
-		return nil, err
+	lines := strings.Split(getInput(), "\n")
+
+	pos := Point{0, 0}
+	for _, line := range lines {
+		amount := parseLine(line)
+		pos.x += amount.x
+		pos.y += amount.y
 	}
-	foo.thisIsOnFoo()
+
+	fmt.Printf("point: %+v", pos)
+
 }
