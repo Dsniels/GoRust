@@ -53,7 +53,7 @@ func getOperation(opts *Opts) Operation {
 		return Add
 	}
 
-	if os.Args[0] == "rm" {
+	if opts.Args[0] == "rm" {
 		return Remove
 	}
 

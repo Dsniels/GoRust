@@ -1,6 +1,4 @@
-use std::{
-    path::{ PathBuf},
-};
+use std::path::PathBuf;
 
 use anyhow::{anyhow, Context, Result};
 
@@ -18,8 +16,8 @@ impl TryFrom<Opts> for Config {
 
     fn try_from(value: Opts) -> std::result::Result<Self, Self::Error> {
         let operation = value.args.try_into()?;
-        let config = get_Config(value.config)?;
-        let pwd = get_Pwd(value.pwd)?;
+        let config = get_config(value.config)?;
+        let pwd = get_pwd(value.pwd)?;
 
         return Ok(Config {
             operation,
@@ -84,11 +82,11 @@ impl TryFrom<Vec<String>> for Operation {
     }
 }
 
-fn get_Config(config: Option<PathBuf>) -> Result<PathBuf> {
+fn get_config(config: Option<PathBuf>) -> Result<PathBuf> {
     if let Some(v) = config {
         return Ok(v);
     }
-    let loc = std::env::var("XDG_CONFIG_HOME").context("unable to get XDG_CONFIG_HOME")?;
+    let loc = std::env::var("APPDATA").context("unable to get APPDATA")?;
     let mut loc = PathBuf::from(loc);
     loc.push("projector");
     loc.push("projector.json");
@@ -96,11 +94,10 @@ fn get_Config(config: Option<PathBuf>) -> Result<PathBuf> {
     return Ok(loc);
 }
 
-fn get_Pwd(pwd: Option<PathBuf>) -> Result<PathBuf> {
+fn get_pwd(pwd: Option<PathBuf>) -> Result<PathBuf> {
     if let Some(pwd) = pwd {
         return Ok(pwd);
     }
-
     let pwd = std::env::current_dir().context("Error getting current directory")?;
     return Ok(pwd);
 }
